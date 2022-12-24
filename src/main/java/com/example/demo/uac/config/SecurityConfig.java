@@ -3,6 +3,8 @@ package com.example.demo.uac.config;
 import com.example.demo.uac.rbac.CustomUserService;
 import com.example.demo.uac.security.IPAuthenticationProcessingFilter;
 import com.example.demo.uac.security.IPAuthenticationProvider;
+import com.example.demo.uac.security.JwtAuthenticationFilter;
+import com.example.demo.uac.security.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.addFilterBefore(ipAuthenticationProcessingFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(new JwtAuthenticationFilter(authenticationManager()));
+        http.addFilter(new JwtAuthorizationFilter(authenticationManager()));
 
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/swagger**/**", "/**/api-docs/**", "/swagger-resources/**", "/webjars/**", "/ipLogin").permitAll()
